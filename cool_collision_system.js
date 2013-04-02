@@ -16,15 +16,31 @@ function eventComparator(a, b) {
   return a.time > b.time ? 1 : a.time == b.time ? 0 : -1;
 };
 
+// This is the same subjective speed as your original demo running at 100 fps.
+var speed = 1;
+// Try making it 10x faster :)
+// speed = 10;
+
+var fps = 60,
+    frameInterval = systemToGameTime(1 / fps * 1000);
+
+function systemToGameTime(msec) {
+  return msec * speed / 100;
+}
+
+function gameToSystemTime(time) {
+  return time / speed * 100;
+}
+
 function CoolCollisionSystem() {
   this.currentTime = 0;
   this.pq = new PriorityQueue(eventComparator);
 
   this.warmUp = function() {
+    this.currentTime = systemToGameTime(Date.now());
     for(var i = 0, length = this.circles.length; i < length; i++) {
       this.predict(this.circles[i]);
     }
-    this.redraw();
   };
 
   this.predict = function(circle) {
@@ -46,32 +62,40 @@ function CoolCollisionSystem() {
 
   this.oldDraw = this.draw;
   this.draw = function(){};
-  this.redraw = function() {
+
+  this.loop = function() {
     this.oldDraw();
-    this.pq.enqueue(new Event(this.currentTime + .1, null, null));
-  };
+    this.pq.enqueue(new Event(this.currentTime + frameInterval, null, null));
 
-  this.update = function() {
-    var e = this.pq.dequeue();
-
-    while(!e.isValid())
+    while (1) {
       e = this.pq.dequeue();
+      if (!e.isValid())
+        continue;
 
-    var a = e.circleA;
-    var b = e.circleB;
+      var a = e.circleA;
+      var b = e.circleB;
 
-    for(var i = 0, length = this.circles.length; i < length; i++) {
-      this.circles[i].move(e.time - this.currentTime, this.canvas.width, this.canvas.height);
+      for(var i = 0, length = this.circles.length; i < length; i++) {
+        this.circles[i].move(e.time - this.currentTime, this.canvas.width, this.canvas.height);
+      }
+      this.currentTime = e.time;
+
+      if(a && b) a.bounceOff(b);
+      else if(a && !b) a.bounceOffVerticalWall();
+      else if(!a && b) b.bounceOffHorizontalWall();
+      else {
+        // Handle draw event
+        var realTime = systemToGameTime(Date.now());
+        var wait = gameToSystemTime(e.time - realTime);
+
+        setTimeout(this.loop.bind(this), wait);
+        this.last_wait = wait; // Allow the FPS counter to report the last wait time
+        return;
+      }
+
+      this.predict(a);
+      this.predict(b);
     }
-    this.currentTime = e.time;
-
-    if(a && b) a.bounceOff(b);
-    else if(a && !b) a.bounceOffVerticalWall();
-    else if(!a && b) b.bounceOffHorizontalWall();
-    else { this.redraw(); }
-
-    this.predict(a);
-    this.predict(b);
   };
 }
 
