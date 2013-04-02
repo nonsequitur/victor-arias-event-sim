@@ -19,7 +19,7 @@ function CollisionSystem() {
     this.update();
     this.draw();
 
-    //document.title = "update avg = " + this.profiler.getAvgForKey("update"); 
+    //document.title = "update avg = " + this.profiler.getAvgForKey("update");
     setTimeout(this.loop.bind(this), 1);
   };
 
@@ -40,7 +40,7 @@ function CollisionSystem() {
   };
 
   this.draw = function(){
-    this.fpsCounter.tick(); 
+    this.fpsCounter.tick();
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.context.fillStyle = '#AA0000';

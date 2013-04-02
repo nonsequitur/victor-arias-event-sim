@@ -6,7 +6,7 @@ function Profiler() {
     var fnToProfile = object[fn];
     var that = this;
     object[fn] = function() {
-      var t = new Date().getTime();  
+      var t = new Date().getTime();
       fnToProfile.apply(object, arguments);
       t = new Date().getTime() - t;
 
@@ -16,7 +16,7 @@ function Profiler() {
 
   this.saveTimeFor = function(key, time) {
     var timesForKey = this.times[key];
-    
+
     timesForKey.sum += time;
     timesForKey.count++;
 

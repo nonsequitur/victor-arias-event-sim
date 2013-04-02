@@ -18,7 +18,7 @@ function PriorityQueue(comparator) {
     this._sink(0);
     this._itens[this.size] = null;
 
-    if (this.size > 0 && this.size == Math.floor(this._itens.length / 4)) 
+    if (this.size > 0 && this.size == Math.floor(this._itens.length / 4))
       this._resize(Math.floor(this._itens.length  / 2));
 
     return tmp;
@@ -54,7 +54,7 @@ function PriorityQueue(comparator) {
     b = Math.floor(b);
     var tmp = this._itens[a];
     this._itens[a] = this._itens[b];
-    this._itens[b] = tmp; 
+    this._itens[b] = tmp;
   };
 
   this._greater = function(a, b) {
@@ -67,7 +67,7 @@ function PriorityQueue(comparator) {
     var es = [];
     for(var i = 0; i < this.size; i++) {
       var e = this._itens[i];
-      es[i] = {time: e.time}; 
+      es[i] = {time: e.time};
     }
     return es;
   }

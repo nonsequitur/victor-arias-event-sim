@@ -59,7 +59,7 @@ function CoolCollisionSystem() {
 
     var a = e.circleA;
     var b = e.circleB;
-    
+
     for(var i = 0, length = this.circles.length; i < length; i++) {
       this.circles[i].move(e.time - this.currentTime, this.canvas.width, this.canvas.height);
     }
